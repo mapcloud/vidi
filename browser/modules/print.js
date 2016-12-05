@@ -174,7 +174,7 @@ module.exports = {
         backboneEvents.get().trigger("start:print");
 
         try {
-            recEdit.editing.disable();
+            recEdit.disableEdit();
         } catch (e) {
         }
 
@@ -253,7 +253,7 @@ module.exports = {
             }
         });
 
-        recEdit.editing.enable();
+        recEdit.enableEdit();
 
         $.ajax({
             dataType: "json",
@@ -373,7 +373,7 @@ module.exports = {
             recEdit = rectangle(center, cloud.map, "yellow", scale, first);
             recEdit._vidi_type = "printHelper";
             printItems.addLayer(recEdit);
-            recEdit.editing.enable();
+            recEdit.enableEdit();
 
             recScale = rectangle(recEdit.getBounds().getCenter(), recEdit, "red");
             recScale._vidi_type = "print";
@@ -384,7 +384,7 @@ module.exports = {
 
             curBounds = [sw.lat, sw.lng, ne.lat, ne.lng];
 
-            recEdit.on('edit', function (e) {
+            recEdit.on('editable:editing', function (e) {
                     rectangle(recEdit.getBounds().getCenter(), recEdit, "red");
 
                     if (curScale !== newScale || (curBounds[0] !== newBounds[0] && curBounds[1] !== newBounds[1] && curBounds[2] !== newBounds[2] && curBounds[3] !== newBounds[3])) {
@@ -394,9 +394,9 @@ module.exports = {
                         printItems.addLayer(recScale);
                         $("#get-print-fieldset").prop("disabled", true);
                     }
-                    recEdit.editing.disable();
+                    recEdit.disableEdit();
                     recEdit.setBounds(recScale.getBounds());
-                    recEdit.editing.enable();
+                    recEdit.enableEdit();
 
                     var sw = recEdit.getBounds().getSouthWest(),
                         ne = recEdit.getBounds().getNorthEast();

@@ -1168,7 +1168,8 @@ try {
 var cloud = new geocloud.map({
     el: "map",
     zoomControl: false,
-    numZoomLevels: 21
+    numZoomLevels: 21,
+    editable: true
 });
 
 /**
@@ -1187,43 +1188,16 @@ var map = cloud.map;
 /**
  *
  */
-var lc = L.control.locate({
+/*var lc = L.control.locate({
     position: 'topright',
     strings: {
         title: "Find me"
     },
     icon: "fa fa-location-arrow",
     iconLoading: "fa fa-circle-o-notch fa-spin"
-}).addTo(map);
+}).addTo(map);*/
 
-/**
- *
- */
-var graphicScale = L.control.graphicScale({
-    doubleLine: false,
-    fill: 'hollow',
-    showSubunits: false,
-    position: "topleft"
-}).addTo(map);
 
-/**
- *
- * @type {div}
- */
-var scaleText = L.DomUtil.create('div', 'scaleText');
-graphicScale._container.insertBefore(scaleText, graphicScale._container.firstChild);
-//scaleText.innerHTML = '<h1>Leaflet Graphic Scale</h1><p>style: <span class="choice">hollow</span>-<span class="choice">line</span>-<span class="choice">fill</span>-<span class="choice">nofill</span></p>';
-
-/**
- *
- */
-var styleChoices = scaleText.querySelectorAll('.choice');
-
-for (var i = 0; i < styleChoices.length; i++) {
-    styleChoices[i].addEventListener('click', function (e) {
-        graphicScale._setStyle({fill: e.currentTarget.innerHTML});
-    });
-}
 
 var localization;
 if (window._vidiLocale === "da_DK") {
@@ -4172,6 +4146,7 @@ module.exports = {
     },
     init: function () {
         cloud.map.addLayer(printItems);
+        // Set locale for date/time string
         var lc = window._vidiLocale.split("_")[0];
         require('moment/locale/da');
         moment.locale(lc);
@@ -4196,9 +4171,6 @@ module.exports = {
             $("#select-scale").empty();
             center = null;
             scale = null;
-
-            // Set locale for date/time string
-            console.log(moment().format('MMMM Do YYYY, H:mm'))
 
             // Set up print dialog
             for (var i = 0; i < scales.length; i++) {
@@ -4295,7 +4267,7 @@ module.exports = {
         backboneEvents.get().trigger("start:print");
 
         try {
-            recEdit.editing.disable();
+            recEdit.disableEdit();
         } catch (e) {
         }
 
@@ -4374,7 +4346,7 @@ module.exports = {
             }
         });
 
-        recEdit.editing.enable();
+        recEdit.enableEdit();
 
         $.ajax({
             dataType: "json",
@@ -4494,7 +4466,7 @@ module.exports = {
             recEdit = rectangle(center, cloud.map, "yellow", scale, first);
             recEdit._vidi_type = "printHelper";
             printItems.addLayer(recEdit);
-            recEdit.editing.enable();
+            recEdit.enableEdit();
 
             recScale = rectangle(recEdit.getBounds().getCenter(), recEdit, "red");
             recScale._vidi_type = "print";
@@ -4505,7 +4477,7 @@ module.exports = {
 
             curBounds = [sw.lat, sw.lng, ne.lat, ne.lng];
 
-            recEdit.on('edit', function (e) {
+            recEdit.on('editable:editing', function (e) {
                     rectangle(recEdit.getBounds().getCenter(), recEdit, "red");
 
                     if (curScale !== newScale || (curBounds[0] !== newBounds[0] && curBounds[1] !== newBounds[1] && curBounds[2] !== newBounds[2] && curBounds[3] !== newBounds[3])) {
@@ -4515,9 +4487,9 @@ module.exports = {
                         printItems.addLayer(recScale);
                         $("#get-print-fieldset").prop("disabled", true);
                     }
-                    recEdit.editing.disable();
+                    recEdit.disableEdit();
                     recEdit.setBounds(recScale.getBounds());
-                    recEdit.editing.enable();
+                    recEdit.enableEdit();
 
                     var sw = recEdit.getBounds().getSouthWest(),
                         ne = recEdit.getBounds().getNorthEast();
@@ -6777,8 +6749,8 @@ module.exports = {
         browser: [{cowiDetail: ["bufferSearch"]}],
         server: [{cowiDetail: ["bufferSearch"]}]
     },
-    __extensions: {
-        browser: [{conflictSearch: ["index", "reportRender", "infoClick", "controller"]}],
+    extensions: {
+        browser: [{conflictSearch: ["index", "reportRender", "infoClick", "controller"], "vectorLayers": ["index"]}],
         server: [{conflictSearch: ["index"]}]
     },
     _template: "cowiDetail.tmpl",
