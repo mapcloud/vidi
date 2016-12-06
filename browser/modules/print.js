@@ -388,17 +388,9 @@ module.exports = {
             curBounds = [sw.lat, sw.lng, ne.lat, ne.lng];
 
             recEdit.on('editable:vertex:dragend editable:dragend', function (e) {
-                    rectangle(recEdit.getBounds().getCenter(), recEdit, "red");
+                    var clone = jQuery.extend(true, {}, recEdit)
+                    rectangle(clone.getBounds().getCenter(), clone, "red");
 
-                    if (curScale !== newScale || (curBounds[0] !== newBounds[0] && curBounds[1] !== newBounds[1] && curBounds[2] !== newBounds[2] && curBounds[3] !== newBounds[3])) {
-                        cloud.map.removeLayer(recScale);
-                        recScale = rectangle(recEdit.getBounds().getCenter(), recEdit, "red");
-                        recScale._vidi_type = "print";
-                        printItems.addLayer(recScale);
-                        recScale.bringToBack();
-                        $("#get-print-fieldset").prop("disabled", true);
-                    }
-                    console.log(recScale.getBounds());
                     recEdit.disableEdit();
                     recEdit.setBounds(recScale.getBounds());
                     recEdit.enableEdit();
