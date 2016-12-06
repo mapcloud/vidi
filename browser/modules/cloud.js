@@ -60,7 +60,7 @@ if (window._vidiLocale === "en_US") {
 }
 /**
  *
- */
+/* *!/
 var measureControl = new L.Control.Measure({
     position: 'topright',
     primaryLengthUnit: 'kilometers',
@@ -70,5 +70,5 @@ var measureControl = new L.Control.Measure({
     localization: localization
 
 });
-measureControl.addTo(map);
+measureControl.addTo(map);*/
 module.exports = cloud;
