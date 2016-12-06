@@ -19,7 +19,9 @@ var cloud = new geocloud.map({
     el: "map",
     zoomControl: false,
     numZoomLevels: 21,
-    editable: true
+    editable: true,
+    zoomAnimation: true,
+    fadeAnimation: false
 });
 
 /**
